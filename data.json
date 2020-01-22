@@ -1,0 +1,22 @@
+{
+  "000000": {
+    "First Name": "Jaehwi",
+    "Last Name": "Kwon",
+    "PIN": "1234",
+    "checking account": 12150.51,
+    "savings account": 1000.01
+  },
+  "000001": {
+    "First Name": "Punishment",
+    "Last Name": "Sanders",
+    "PIN": "1111",
+    "checking account": 6216812065.0,
+    "savings account": 2100.0
+  },
+  "582824": {
+    "First Name": "Mickey",
+    "Last Name": "Mouse",
+    "PIN": "1111",
+    "checking account": 50.0
+  }
+}
