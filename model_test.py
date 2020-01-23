@@ -3,13 +3,14 @@ import random
 
 class Account:
     
-    def __init__(self, fname, lname, account_num, pin, checking, savings = None):
+    def __init__(self, fname, lname, account_num, pin, checking, savings = "None"):
         self.fname = fname 
         self.lname = lname
         self.account_num = account_num
         self.pin = pin
         self.checking = checking
         self.savings = savings
+        self.transfer_funds = {"checking" : self.checking, "savings": self.savings}
 
     @classmethod
     def load(cls):
@@ -53,9 +54,16 @@ class Account:
         return self.checking
 
     def transfer(self, from_account, to_account, amount):
-        self.savings -= amount
-        self.to_account += amount
+        self.transfer_funds[from_account] -= amount
+        self.transfer_funds[to_account] += amount
         #TODO Show error code for when person does not have 2 accounts.
 
-        return data[account_num]
+        return self.transfer_funds[from_account], self.transfer_funds[to_account]
+
+    def open_savings(self, yesorno, num):
+        if yesorno == 'y':
+            self.checking -= num
+            self.saving = num
+        self.saving = num
+
 

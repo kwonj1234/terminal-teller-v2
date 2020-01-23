@@ -14,7 +14,7 @@ def run():
             lname = view_test.last_name()
             pin = view_test.choose_pin()
             initial = float(view_test.deposit_initial())
-
+            data = model_test.Account.load()
             #Create new account then display
             #create random account number
             account_num = [str(random.randint(0,9)) for i in range(0,6)]
@@ -48,7 +48,7 @@ def run():
                         view_test.check_balance(info)
 
                     elif choice == "2": #withdraw from checking
-                        login_withdrawal(account_num)  #see line 76
+                        login_withdrawal(account_num)  #see line 79
 
                     elif choice == "3": #deposit into checking
                         num = view_test.deposit()
@@ -59,20 +59,19 @@ def run():
                     elif choice == "4": #transfer funds
                         from_account, to_account, amount = view_test.transfer()
 
-                        #Add " account" at the end of the string so it matches the key in the dictionary
-                        from_account = from_account + " account"
-                        to_account = to_account + " account"
                         #convert amount value from string to float
                         amount = float(amount)
 
-                        info = model_test.Account.transfer(account_num, from_account, to_account, amount)
-                        view_test.transfer_new_balance(info, from_account, to_account)
-                    elif choice == "5":
-                        yesorno, deposit = view.create_savings()
-                        model.open_savings(yesorno, float(deposit), account_num)
-                        view.savings_opened(float(deposit))
+                        from_balance, to_balance = model_test.Account.transfer(account_num, from_account, to_account, amount)
+                        view_test.transfer_new_balance(from_balance, to_balance, from_account, to_account)
+
+                    elif choice == "5": #create savings
+                        yesorno, deposit = view_test.create_savings()
+                        model_test.Account.open_savings(account_num ,yesorno, float(deposit))
+                        model_test.Account.save(account_num)
+                        view_test.savings_opened(float(deposit))
                     elif choice == "6":
-                        view.signout()
+                        view_test.signout()
                         return                 
         else:
             view_test.bad_input()

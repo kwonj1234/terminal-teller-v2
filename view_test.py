@@ -54,7 +54,8 @@ def login_menu():
 #Check Balance
 def check_balance(info):
     print('\nYour Checking Account has a balance of : $' + "{:.2f}".format(info["checking account"]))
-    if "savings account" in info:
+    print(info["savings account"])
+    if info["savings account"] != "None":
         print('Your Savings Account has a balance of : $' + "{:.2f}".format(info["savings account"]))
 
 #Withdraw funds
@@ -91,10 +92,10 @@ def transfer():
     amount = input('\nHow much would you like to transfer?\n')
     return from_account, to_account, amount
 
-def transfer_new_balance(info, from_account, to_account):
+def transfer_new_balance(from_balance, to_balance, from_account, to_account):
     print('\nYour new account balance is')
-    print(f'{from_account} : $' + "{:.2f}".format(info[from_account]))
-    print(f'{to_account} : $' + "{:.2f}".format(info[to_account]))
+    print(f'{from_account} : $' + "{:.2f}".format(from_balance))
+    print(f'{to_account} : $' + "{:.2f}".format(to_balance))
 
 #Create a Savings Account
 def create_savings():
