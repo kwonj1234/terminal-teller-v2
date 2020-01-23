@@ -1,1 +1,1 @@
-git@github.com:kwonj1234/Weekend1_terminal_teller.git
+git@github.com:kwonj1234/terminal-teller-v2.git

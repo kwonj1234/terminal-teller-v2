@@ -17,6 +17,21 @@
     "First Name": "Mickey",
     "Last Name": "Mouse",
     "PIN": "1111",
-    "checking account": 50.0
+    "checking account": 50.0,
+    "savings account": null
+  },
+  "939380": {
+    "First Name": "Minnie",
+    "Last Name": "Mouse",
+    "PIN": "1111",
+    "checking account": 100.0,
+    "savings account": null
+  },
+  "238812": {
+    "First Name": "Donald",
+    "Last Name": "Duck",
+    "PIN": "1111",
+    "checking account": 100.0,
+    "savings account": null
   }
 }

@@ -17,11 +17,12 @@ def create_account(fname, lname, pin, initial):
     #Create random 6 digit account number
     #Make sure you do not create a repeat of what is already in the data
     account_num = [str(random.randint(0,9)) for i in range(0,6)]
+    account_num = "".join(account_num)
     while str(account_num) in list(data.keys()):
         account_num = [str(random.randint(0,9)) for i in range(0,6)]
+        account_num = "".join(account_num)
         # for i in range(0,6):
         #     account_num.append(str(random.randint(0,9)))
-        account_num = "".join(account_num)
 
     data[account_num] = {"First Name" : fname, "Last Name" : lname, "PIN" : pin, "checking account" : initial}
         # TODO add error handling for non names inputted where names are supposed to be,
