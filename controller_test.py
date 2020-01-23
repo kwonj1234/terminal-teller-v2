@@ -15,6 +15,7 @@ def run():
             pin = view_test.choose_pin()
             initial = float(view_test.deposit_initial())
             data = model_test.Account.load()
+
             #Create new account then display
             #create random account number
             account_num = [str(random.randint(0,9)) for i in range(0,6)]
@@ -48,7 +49,8 @@ def run():
                         view_test.check_balance(info)
 
                     elif choice == "2": #withdraw from checking
-                        login_withdrawal(account_num)  #see line 79
+                        choice = view_test.withdraw()
+                        login_withdrawal(account_num, choice)  #see line 85
 
                     elif choice == "3": #deposit into checking
                         num = view_test.deposit()
@@ -57,12 +59,30 @@ def run():
                         model_test.Account.save(account_num)
 
                     elif choice == "4": #transfer funds
-                        from_account, to_account, amount = view_test.transfer()
+
+                        from_account = view_test.transfer_from_account()
+                        if from_account != "checking" or from_account != "savings":
+                            return
+                        else:
+                            view_test.bad_transfer()
+
+                        to_account = view_test.transfer_to_account()
+                        if to_account == "checking" or to_account == "savings":
+                            return
+                        else:
+                            view_test.bad_transfer()
+                
+                        amount = view_test.transfer_amount()
+                        if amount.isnumeric() == True:
+                            return
+                        else:
+                            view_test.bad_input()
 
                         #convert amount value from string to float
                         amount = float(amount)
 
-                        from_balance, to_balance = model_test.Account.transfer(account_num, from_account, to_account, amount)
+                        from_balance, to_balance = model_test.Account.transfer(account_num, \
+                            from_account, to_account, amount)
                         view_test.transfer_new_balance(from_balance, to_balance, from_account, to_account)
 
                     elif choice == "5": #create savings
@@ -70,38 +90,57 @@ def run():
                         model_test.Account.open_savings(account_num ,yesorno, float(deposit))
                         model_test.Account.save(account_num)
                         view_test.savings_opened(float(deposit))
-                    elif choice == "6":
+
+                    elif choice == "6": #sign out
                         view_test.signout()
-                        return                 
+                        return  
+
+                    else:
+                        view_test.bad_input()  
+
         else:
             view_test.bad_input()
 
-def login_withdrawal(account_num):  #see line 50
+def login_withdrawal(account_num, choice):  #see line 52, withdraw money
     while True:
-        choice = view_test.withdraw()
-        #Quick withdrawal 
-        if int(choice) in [1,4]:
-            #Quick withdrawal options
-            list = [10,20,50,100]
-            num = list[int(choice) - 1]
-            new_balance = model_test.Account.withdraw(account_num, num)
-            #Insufficient funds
-            if new_balance == False:
-                view_test.insufficient_funds()
-            view_test.withdraw_new_balance(num, new_balance)
-            return
 
-    #Withdraw custom amount
-        elif choice == "5":
-            num = view_test.withdraw_custom()
-            new_balance = model_test.Account.withdraw(account_num, num)
-            if new_balance == False:
-                view_test.insufficient_funds()
-                return
-            view_test.withdraw_new_balance(num, new_balance)
-            model_test.Account.save(account_num)
-            return
-        else: 
-            view_test.bad_input
+        #Quick withdrawal 
+        if choice.isnumeric() == True:
+            if int(choice) in [1,4]:
+                #Quick withdrawal options
+                list = [10,20,50,100]
+                num = list[int(choice) - 1]
+                new_balance = model_test.Account.withdraw(account_num, num)
+
+                #Insufficient funds
+                if new_balance == False:
+                    view_test.insufficient_funds()
+                    return
+
+                view_test.withdraw_new_balance(num, new_balance)
+                model_test.Account.save(account_num)
+
+        #Withdraw custom amount
+            elif choice == "5":
+                num = view_test.withdraw_custom()
+
+                #error handling
+                if num.isnumeric() != True:
+                    view_test.not_dollar()
+                    return
+
+                new_balance = model_test.Account.withdraw(account_num, float(num))
+                
+                #insufficient funds
+                if new_balance == False:
+                    view_test.insufficient_funds()
+                    return
+                    
+                view_test.withdraw_new_balance(num, new_balance)
+                model_test.Account.save(account_num)
+            else:
+                view_test.bad_input()     
+        else:
+            view_test.bad_input()
 
 run()

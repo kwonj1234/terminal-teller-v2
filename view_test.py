@@ -1,3 +1,5 @@
+from getpass import getpass
+
 def main_menu():
     print()
     print("Welcome to Terminal Teller\n")
@@ -22,7 +24,7 @@ def last_name():
 def choose_pin():
     print("\nPlease enter a four digit PIN")
     print("(Make sure your PIN is unique to you and easy to remember)")
-    return input()
+    return getpass()
 
 def deposit_initial():
     print("\nPlease deposit at least $0.01 to open your account")
@@ -35,7 +37,7 @@ def new_account(account_num):
 #Login
 def login():
     print("\nPlease enter your Account Number and PIN")
-    return (input("\nAccount Number: ") , input("\nPIN: "))
+    return (getpass("\nAccount Number: ") , getpass("\nPIN: "))
 
 def welcome(account_num, fname, lname):
     print(f'\nHello {fname} {lname}')
@@ -54,7 +56,6 @@ def login_menu():
 #Check Balance
 def check_balance(info):
     print('\nYour Checking Account has a balance of : $' + "{:.2f}".format(info["checking account"]))
-    print(info["savings account"])
     if info["savings account"] != "None":
         print('Your Savings Account has a balance of : $' + "{:.2f}".format(info["savings account"]))
 
@@ -70,7 +71,7 @@ def withdraw():
 
 def withdraw_custom():
     print('\nEnter Custom Amount')
-    return float(input())
+    return input()
 
 def withdraw_new_balance(num, new_balance):
     print('\nYou withdrew : $' + "{:.2f}".format(num))
@@ -86,11 +87,17 @@ def deposit_new_balance(num, new_balance):
     print('Your Checking Account balance is : $' + "{:.2f}".format(new_balance))
 
 #Transfer money from one account to the other
-def transfer():
+def transfer_from_account():
     from_account = input('\nWhich account would you like to transfer funds from?\n')
+    return from_account
+
+def transfer_to_account():
     to_account = input('\nWhich account would you like to transfer funds to?\n')
+    return to_account
+
+def transfer_amount():
     amount = input('\nHow much would you like to transfer?\n')
-    return from_account, to_account, amount
+    return amount
 
 def transfer_new_balance(from_balance, to_balance, from_account, to_account):
     print('\nYour new account balance is')
@@ -121,3 +128,9 @@ def insufficient_funds():
 
 def bad_input():
     print("Invalid Input")
+
+def bad_transfer():
+    print("Please choose either checking or savings")
+
+def not_dollar():
+    print("Please enter a dollar value")
