@@ -80,7 +80,7 @@ def withdraw_new_balance(num, new_balance):
 #Deposit into your account
 def deposit():
     print('\nHow much would you like to deposit?')
-    return float(input())
+    return input()
 
 def deposit_new_balance(num, new_balance):
     print('\nYou deposited : $' + "{:.2f}".format(num))

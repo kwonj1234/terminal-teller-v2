@@ -36,74 +36,46 @@ def run():
             #Check if login info is correct
             if model_test.Account.validate(account_num, pin) == False:
                 view_test.bad_login()
-            else:
-                #Login Menu - Check Balance, Withdraw, Deposit, Open Savings Account
-                info = model_test.Account.login(account_num)
-                account_num = model_test.Account(info["First Name"], info["Last Name"], \
-                    account_num, info["PIN"], info["checking account"], info["savings account"])
-           
-                view_test.welcome(account_num.account_num, account_num.fname, account_num.lname)
-                while True:
-                    choice = view_test.login_menu()
-                    if choice == "1": #check balance
-                        view_test.check_balance(info)
 
-                    elif choice == "2": #withdraw from checking
-                        choice = view_test.withdraw()
-                        login_withdrawal(account_num, choice)  #see line 85
+            #Login Menu - Check Balance, Withdraw, Deposit, Open Savings Account
+            info = model_test.Account.login(account_num)
+            account_num = model_test.Account(info["First Name"], info["Last Name"], \
+                account_num, info["PIN"], info["checking account"], info["savings account"])
+        
+            view_test.welcome(account_num.account_num, account_num.fname, account_num.lname)
+            while True:
+                choice = view_test.login_menu()
+                if choice == "1": #check balance
+                    view_test.check_balance(info)
 
-                    elif choice == "3": #deposit into checking
-                        num = view_test.deposit()
-                        new_balance = model_test.Account.deposit(account_num,num)
-                        view_test.deposit_new_balance(num, new_balance)
-                        model_test.Account.save(account_num)
+                elif choice == "2": #withdraw from checking
+                    login_withdrawal(account_num, choice)  #see line 76
 
-                    elif choice == "4": #transfer funds
+                elif choice == "3": #deposit into checking
+                    login_deposit(account_num)    #see line 118
 
-                        from_account = view_test.transfer_from_account()
-                        if from_account != "checking" or from_account != "savings":
-                            return
-                        else:
-                            view_test.bad_transfer()
+                elif choice == "4": #transfer funds
+                    login_transfer(account_num)   #see line 131
+                    
+                elif choice == "5": #create savings
+                    yesorno, deposit = view_test.create_savings()
+                    model_test.Account.open_savings(account_num ,yesorno, float(deposit))
+                    model_test.Account.save(account_num)
+                    view_test.savings_opened(float(deposit))
 
-                        to_account = view_test.transfer_to_account()
-                        if to_account == "checking" or to_account == "savings":
-                            return
-                        else:
-                            view_test.bad_transfer()
-                
-                        amount = view_test.transfer_amount()
-                        if amount.isnumeric() == True:
-                            return
-                        else:
-                            view_test.bad_input()
+                elif choice == "6": #sign out
+                    view_test.signout()
+                    return  
 
-                        #convert amount value from string to float
-                        amount = float(amount)
-
-                        from_balance, to_balance = model_test.Account.transfer(account_num, \
-                            from_account, to_account, amount)
-                        view_test.transfer_new_balance(from_balance, to_balance, from_account, to_account)
-
-                    elif choice == "5": #create savings
-                        yesorno, deposit = view_test.create_savings()
-                        model_test.Account.open_savings(account_num ,yesorno, float(deposit))
-                        model_test.Account.save(account_num)
-                        view_test.savings_opened(float(deposit))
-
-                    elif choice == "6": #sign out
-                        view_test.signout()
-                        return  
-
-                    else:
-                        view_test.bad_input()  
+                else:
+                    view_test.bad_input()  
 
         else:
             view_test.bad_input()
 
 def login_withdrawal(account_num, choice):  #see line 52, withdraw money
     while True:
-
+        choice = view_test.withdraw()
         #Quick withdrawal 
         if choice.isnumeric() == True:
             if int(choice) in [1,4]:
@@ -142,5 +114,49 @@ def login_withdrawal(account_num, choice):  #see line 52, withdraw money
                 view_test.bad_input()     
         else:
             view_test.bad_input()
+
+def login_deposit(account_num):   #see line 55
+    num = view_test.deposit()
+
+    #error handling
+    while num.isnumeric == False:
+        view_test.not_dollar()
+        num = view_test.deposit()
+
+    num = float(num)
+    new_balance = model_test.Account.deposit(account_num,num)
+    view_test.deposit_new_balance(num, new_balance)
+    model_test.Account.save(account_num)
+
+def login_transfer(account_num):   #see line 57
+
+    from_account = view_test.transfer_from_account()
+    #error handling for non-account inputs
+    while from_account != "checking" and from_account != "savings":
+        view_test.bad_transfer()
+        from_account = view_test.transfer_from_account()
+
+    to_account = view_test.transfer_to_account()
+    while to_account != "checking" and to_account != "savings":
+        view_test.bad_transfer()
+        to_account = view_test.transfer_to_account()
+
+    #error handling for non-numeric inputs
+    amount = view_test.transfer_amount()
+    while amount.isnumeric() == False:
+        view_test.not_dollar()
+        amount = view_test.transfer_amount()
+    
+    #convert amount value from string to float
+    amount = float(amount)
+
+    #error handling for insufficient funds
+    if amount > account_num.transfer_funds[from_account]:
+        view_test.insufficient_funds()
+        return
+
+    from_balance, to_balance = model_test.Account.transfer(account_num, \
+        from_account, to_account, amount)
+    view_test.transfer_new_balance(from_balance, to_balance, from_account, to_account)
 
 run()
